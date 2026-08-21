@@ -1,0 +1,227 @@
+﻿<ui:FluentWindow x:Class="ActiveDirectory.UI.Views.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:ui="http://schemas.lepo.co/wpfui/2022/xaml"
+        xmlns:vm="clr-namespace:ActiveDirectory.UI.ViewModels"
+        Title="Active Directory - Ricerca Utenti"
+        Height="760" Width="1100"
+        MinHeight="680" MinWidth="960"
+        WindowStartupLocation="CenterScreen">
+
+    <ui:FluentWindow.Resources>
+        <BooleanToVisibilityConverter x:Key="BoolToVis"/>
+        
+        <Style x:Key="FieldLabel" TargetType="TextBlock">
+            <Setter Property="FontSize" Value="11"/>
+            <Setter Property="Foreground" Value="{ui:ThemeResource TextFillColorSecondaryBrush}"/>
+            <Setter Property="Margin" Value="0,0,0,2"/>
+        </Style>
+
+        <!-- FIX: Set explicit Background brush to allow VisualStateManager color animations -->
+        <Style x:Key="FieldValue" TargetType="TextBox" BasedOn="{StaticResource {x:Type TextBox}}">
+            <Setter Property="Margin" Value="0,0,0,8"/>
+            <Setter Property="IsReadOnly" Value="True"/>
+            <Setter Property="Background" Value="Transparent"/>
+            <Setter Property="FontSize" Value="12"/>
+            <Setter Property="Padding" Value="8,4"/>
+            <Setter Property="ToolTip" Value="{Binding RelativeSource={RelativeSource Self}, Path=Text}"/>
+        </Style>
+
+        <Style x:Key="SectionTitle" TargetType="TextBlock">
+            <Setter Property="FontSize" Value="14"/>
+            <Setter Property="FontWeight" Value="SemiBold"/>
+            <Setter Property="Margin" Value="0,0,0,8"/>
+        </Style>
+    </ui:FluentWindow.Resources>
+
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+
+        <!-- Title Bar -->
+        <ui:TitleBar Grid.Row="0" Title="Active Directory - Ricerca Utenti">
+            <ui:TitleBar.Icon>
+                <ui:SymbolIcon Symbol="PeopleSearch24"/>
+            </ui:TitleBar.Icon>
+        </ui:TitleBar>
+
+        <!-- Search Card -->
+        <ui:Card Grid.Row="1" Margin="16,8,16,8" Padding="12">
+            <StackPanel Orientation="Horizontal">
+                <StackPanel Width="220" Margin="0,0,12,0">
+                    <TextBlock Text="Nome" Style="{StaticResource FieldLabel}"/>
+                    <ui:TextBox Text="{Binding FirstName, UpdateSourceTrigger=PropertyChanged}"
+                                PlaceholderText="es. Mario"
+                                Icon="{ui:SymbolIcon Person24}"/>
+                </StackPanel>
+                <StackPanel Width="220" Margin="0,0,20,0">
+                    <TextBlock Text="Cognome" Style="{StaticResource FieldLabel}"/>
+                    <ui:TextBox Text="{Binding LastName, UpdateSourceTrigger=PropertyChanged}"
+                                PlaceholderText="es. Rossi"
+                                Icon="{ui:SymbolIcon Person24}"/>
+                </StackPanel>
+                <ui:Button Content="Verifica"
+                           Command="{Binding SearchUsersCommand}"
+                           Appearance="Primary"
+                           Icon="{ui:SymbolIcon Search24}"
+                           VerticalAlignment="Bottom"
+                           Padding="24,8"
+                           Margin="0,0,0,0"/>
+            </StackPanel>
+        </ui:Card>
+
+        <!-- Results + Details -->
+        <Grid Grid.Row="2" Margin="16,0,16,8">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="300"/>
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
+
+            <!-- User List -->
+            <ui:Card Grid.Column="0" Margin="0,0,8,0" Padding="0">
+                <DockPanel>
+                    <TextBlock DockPanel.Dock="Top" Text="Risultati" FontWeight="SemiBold"
+                               Margin="12,10,12,8"/>
+                    <ListView ItemsSource="{Binding SearchResults}"
+                              SelectedItem="{Binding SelectedUser}"
+                              BorderThickness="0"
+                              Background="Transparent">
+                        <ListView.ItemTemplate>
+                            <DataTemplate>
+                                <StackPanel Margin="4,6">
+                                    <TextBlock Text="{Binding DisplayName}"
+                                               Foreground="{ui:ThemeResource TextFillColorSecondaryBrush}"
+                                               FontWeight="Medium"/>
+                                    <TextBlock Text="{Binding Description}"
+                                               Foreground="{ui:ThemeResource TextFillColorSecondaryBrush}"
+                                               FontSize="11"/>
+                                </StackPanel>
+                            </DataTemplate>
+                        </ListView.ItemTemplate>
+                    </ListView>
+                </DockPanel>
+            </ui:Card>
+
+            <!-- Details Panel -->
+            <ui:Card Grid.Column="1" Margin="8,0,0,0" Padding="20">
+                <Grid>
+                    <StackPanel DataContext="{Binding SelectedUser}">
+
+                        <TextBlock Text="Dettagli Utente" Style="{StaticResource SectionTitle}" FontSize="18"/>
+
+                        <!-- Riga 1: Nome / Cognome / Ufficio -->
+                        <Grid Margin="0,0,0,0">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="*"/>
+                            </Grid.ColumnDefinitions>
+                            <StackPanel Grid.Column="0" Margin="0,0,8,0">
+                                <TextBlock Text="Nome" Style="{StaticResource FieldLabel}"/>
+                                <TextBox Text="{Binding FirstName, Mode=OneWay}" Style="{StaticResource FieldValue}"/>
+                            </StackPanel>
+                            <StackPanel Grid.Column="1" Margin="0,0,8,0">
+                                <TextBlock Text="Cognome" Style="{StaticResource FieldLabel}"/>
+                                <TextBox Text="{Binding LastName, Mode=OneWay}" Style="{StaticResource FieldValue}"/>
+                            </StackPanel>
+                            <StackPanel Grid.Column="2">
+                                <TextBlock Text="Ufficio" Style="{StaticResource FieldLabel}"/>
+                                <TextBox Text="{Binding PhysicalOfficeName, Mode=OneWay}" Style="{StaticResource FieldValue}"/>
+                            </StackPanel>
+                        </Grid>
+
+                        <!-- Riga 2: Telefono / User Principal Name -->
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="2*"/>
+                            </Grid.ColumnDefinitions>
+                            <StackPanel Grid.Column="0" Margin="0,0,8,0">
+                                <TextBlock Text="Telefono" Style="{StaticResource FieldLabel}"/>
+                                <TextBox Text="{Binding TelephoneNumber, Mode=OneWay}" Style="{StaticResource FieldValue}"/>
+                            </StackPanel>
+                            <StackPanel Grid.Column="1">
+                                <TextBlock Text="User Principal Name" Style="{StaticResource FieldLabel}"/>
+                                <TextBox Text="{Binding UserPrincipalName, Mode=OneWay}" Style="{StaticResource FieldValue}"/>
+                            </StackPanel>
+                        </Grid>
+
+                        <!-- Descrizione -->
+                        <TextBlock Text="Descrizione" Style="{StaticResource FieldLabel}"/>
+                        <TextBox Text="{Binding Description, Mode=OneWay}" Style="{StaticResource FieldValue}"/>
+
+                        <!-- Distinguished Name -->
+                        <TextBlock Text="Distinguished Name" Style="{StaticResource FieldLabel}"/>
+                        <TextBox Text="{Binding DistinguishedName, Mode=OneWay}" Style="{StaticResource FieldValue}"/>
+
+                        <!-- ADS Path -->
+                        <TextBlock Text="ADS Path" Style="{StaticResource FieldLabel}"/>
+                        <TextBox Text="{Binding AdsPath, Mode=OneWay}" Style="{StaticResource FieldValue}"/>
+
+                        <!-- SamAccountName + Copy Button -->
+                        <TextBlock Text="sAMAccountName (Codice Fiscale)" Style="{StaticResource FieldLabel}"/>
+                        <Grid Margin="0,0,0,8">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="Auto"/>
+                            </Grid.ColumnDefinitions>
+                            <TextBox Grid.Column="0" Text="{Binding SamAccountName, Mode=OneWay}" IsReadOnly="True"
+                                     FontSize="12" Padding="8,4"/>
+                            <ui:Button Grid.Column="1" Margin="8,0,0,0"
+                                       Command="{Binding DataContext.CopySamAccountNameCommand, RelativeSource={RelativeSource AncestorType=ui:FluentWindow}}"
+                                       Icon="{ui:SymbolIcon Copy24}"
+                                       ToolTip="Copia sAMAccountName negli appunti"/>
+                        </Grid>
+
+                        <Separator Margin="0,2,0,10"/>
+
+                        <!-- Decoded Fiscal Code Info -->
+                        <TextBlock Text="Codice Fiscale Decodificato" Style="{StaticResource SectionTitle}" FontSize="15"/>
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="*"/>
+                            </Grid.ColumnDefinitions>
+                            <StackPanel Grid.Column="0" Margin="0,0,8,0">
+                                <TextBlock Text="Data di Nascita" Style="{StaticResource FieldLabel}"/>
+                                <TextBox Style="{StaticResource FieldValue}">
+                                    <TextBox.Text>
+                                        <Binding Path="DataContext.FiscalCodeDetails.BirthDate"
+                                                 RelativeSource="{RelativeSource AncestorType=ui:FluentWindow}"
+                                                 StringFormat="dd/MM/yyyy" Mode="OneWay"/>
+                                    </TextBox.Text>
+                                </TextBox>
+                            </StackPanel>
+                            <StackPanel Grid.Column="1">
+                                <TextBlock Text="Comune / Stato di Nascita" Style="{StaticResource FieldLabel}"/>
+                                <TextBox Text="{Binding DataContext.FiscalCodeDetails.PlaceOfBirth, RelativeSource={RelativeSource AncestorType=ui:FluentWindow}, Mode=OneWay}"
+                                         Style="{StaticResource FieldValue}"/>
+                            </StackPanel>
+                        </Grid>
+
+                    </StackPanel>
+
+                    <!-- Overlay di caricamento durante il fetch dei dettagli -->
+                    <Border Background="{ui:ThemeResource ApplicationBackgroundBrush}"
+                            Opacity="0.85"
+                            Visibility="{Binding DataContext.IsBusy, RelativeSource={RelativeSource AncestorType=ui:FluentWindow}, Converter={StaticResource BoolToVis}}">
+                        <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center">
+                            <ui:ProgressRing IsIndeterminate="True" Width="36" Height="36" Margin="0,0,0,8"/>
+                            <TextBlock Text="{Binding DataContext.StatusMessage, RelativeSource={RelativeSource AncestorType=ui:FluentWindow}}"
+                                       Foreground="{ui:ThemeResource TextFillColorSecondaryBrush}"/>
+                        </StackPanel>
+                    </Border>
+                </Grid>
+            </ui:Card>
+        </Grid>
+
+        <!-- Status Bar -->
+        <Border Grid.Row="3" Padding="16,6" Background="{DynamicResource ControlFillColorDefaultBrush}">
+            <TextBlock Text="{Binding StatusMessage}" Foreground="{ui:ThemeResource TextFillColorSecondaryBrush}" FontSize="12"/>
+        </Border>
+    </Grid>
+</ui:FluentWindow>

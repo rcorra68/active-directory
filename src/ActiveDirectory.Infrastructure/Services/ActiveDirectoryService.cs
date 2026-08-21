@@ -33,7 +33,7 @@ public class ActiveDirectoryService : IActiveDirectoryService
             };
 
             searcher.Filter = filter;
-            searcher.PropertiesToLoad.AddRange(["sn", "givenname", "samaccountname"]);
+            searcher.PropertiesToLoad.AddRange(["sn", "givenname", "samaccountname", "userprincipalname", "description"]);
 
             using SearchResultCollection searchResults = searcher.FindAll();
             foreach (SearchResult item in searchResults)
@@ -42,7 +42,9 @@ public class ActiveDirectoryService : IActiveDirectoryService
                 {
                     FirstName = GetPropertyValue(item, "givenname").ToUpperInvariant(),
                     LastName = GetPropertyValue(item, "sn").ToUpperInvariant(),
-                    SamAccountName = GetPropertyValue(item, "samaccountname").ToUpperInvariant()
+                    UserPrincipalName = GetPropertyValue(item, "userprincipalname").ToLowerInvariant(),
+                    SamAccountName = GetPropertyValue(item, "samaccountname").ToUpperInvariant(),
+                    Description = GetPropertyValue(item, "description").ToUpperInvariant()
                 });
             }
 

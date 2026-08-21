@@ -12,5 +12,5 @@ public record AdUserDto
     public string TelephoneNumber { get; init; } = string.Empty;
     public string AdsPath { get; init; } = string.Empty;
 
-    public string DisplayName => $"{FirstName} {LastName} ({SamAccountName})";
+    public string DisplayName => $"{FirstName} {LastName} ({UserPrincipalName.Split('@')[0]})";
 }

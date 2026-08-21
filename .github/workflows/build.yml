@@ -1,0 +1,18 @@
+name: Build and Release
+
+on:
+  push:
+    branches:
+      - main
+
+permissions:
+  contents: write
+  pull-requests: write
+
+jobs:
+  release:
+    uses: rcorra68/reusable-workflows/.github/workflows/publish-dotnet-cli.yml@main
+    with:
+      project_path: src/ActiveDirectory.UI/ActiveDirectory.UI.csproj
+      runtimes: '["win-x64"]'
+      artifact_name: active-directory

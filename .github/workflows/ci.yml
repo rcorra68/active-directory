@@ -1,0 +1,9 @@
+name: CI
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  validate:
+    uses: rcorra68/reusable-workflows/.github/workflows/ci.yml@main

@@ -1,16 +1,19 @@
-﻿using System.Globalization;
-using ActiveDirectory.Core.Interfaces;
+﻿using ActiveDirectory.Core.Interfaces;
+using ActiveDirectory.Infrastructure.Helpers;
 
 namespace ActiveDirectory.Infrastructure.Services;
 
+/// <summary>
+/// Decodes Italian Fiscal Codes (Codice Fiscale) and resolves birth places using cadastral codes.
+/// </summary>
 public class FiscalCodeDecoder : IFiscalCodeDecoder
 {
     private const string MonthCodes = "ABCDEHLMPRST";
-    private readonly Dictionary<string, string> _catastoDictionary;
+    private readonly IReadOnlyDictionary<string, string> _cadastralDictionary;
 
-    public FiscalCodeDecoder(Dictionary<string, string> catastoDictionary)
+    public FiscalCodeDecoder(IReadOnlyDictionary<string, string> cadastralDictionary)
     {
-        _catastoDictionary = catastoDictionary ?? new Dictionary<string, string>();
+        _cadastralDictionary = cadastralDictionary ?? new Dictionary<string, string>();
     }
 
     public FiscalCodeInfo? Decode(string fiscalCode)
@@ -32,7 +35,10 @@ public class FiscalCodeDecoder : IFiscalCodeDecoder
 
             char monthChar = code[8];
             int month = MonthCodes.IndexOf(monthChar) + 1;
-            if (month <= 0) return null;
+            if (month <= 0)
+            {
+                return null;
+            }
 
             bool isFemale = rawDay > 40;
             int day = isFemale ? rawDay - 40 : rawDay;
@@ -41,12 +47,16 @@ public class FiscalCodeDecoder : IFiscalCodeDecoder
             int year = rawYear <= currentTwoDigitYear ? 2000 + rawYear : 1900 + rawYear;
 
             var birthDate = new DateTime(year, month, day);
-            string istatCode = code.Substring(11, 4);
 
-            _catastoDictionary.TryGetValue(istatCode, out string? placeOfBirth);
-            placeOfBirth ??= "COMUNE SCONOSCIUTO";
+            string rawCadastralCode = code.Substring(11, 4);
+            string cadastralCode = rawCadastralCode.NormalizeCadastralCode();
 
-            return new FiscalCodeInfo(birthDate, isFemale, istatCode, placeOfBirth);
+            if (!_cadastralDictionary.TryGetValue(cadastralCode, out string? placeOfBirth))
+            {
+                placeOfBirth = "UNKNOWN LOCATION";
+            }
+
+            return new FiscalCodeInfo(birthDate, isFemale, cadastralCode, placeOfBirth);
         }
         catch
         {
