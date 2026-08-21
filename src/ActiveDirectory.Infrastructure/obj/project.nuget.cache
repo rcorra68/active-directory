@@ -1,11 +1,10 @@
 {
   "version": 2,
-  "dgSpecHash": "mehDc5GgKUo=",
+  "dgSpecHash": "9XJRIBakRjQ=",
   "success": true,
   "projectFilePath": "D:\\Sviluppo\\VVF\\active-directory\\src\\ActiveDirectory.Infrastructure\\ActiveDirectory.Infrastructure.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\roberto.corradetti\\.nuget\\packages\\csvhelper\\33.1.0\\csvhelper.33.1.0.nupkg.sha512",
-    "C:\\Users\\roberto.corradetti\\.nuget\\packages\\nerdbank.gitversioning\\3.10.91\\nerdbank.gitversioning.3.10.91.nupkg.sha512",
     "C:\\Users\\roberto.corradetti\\.nuget\\packages\\system.directoryservices\\9.0.0\\system.directoryservices.9.0.0.nupkg.sha512"
   ],
   "logs": []

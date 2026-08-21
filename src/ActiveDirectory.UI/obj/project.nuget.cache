@@ -1,6 +1,6 @@
 {
   "version": 2,
-  "dgSpecHash": "ybAcu2+8WEU=",
+  "dgSpecHash": "XQ2xKLDrLbA=",
   "success": true,
   "projectFilePath": "D:\\Sviluppo\\VVF\\active-directory\\src\\ActiveDirectory.UI\\ActiveDirectory.UI.csproj",
   "expectedPackageFiles": [
@@ -33,7 +33,6 @@
     "C:\\Users\\roberto.corradetti\\.nuget\\packages\\microsoft.extensions.options\\10.0.11\\microsoft.extensions.options.10.0.11.nupkg.sha512",
     "C:\\Users\\roberto.corradetti\\.nuget\\packages\\microsoft.extensions.options.configurationextensions\\10.0.11\\microsoft.extensions.options.configurationextensions.10.0.11.nupkg.sha512",
     "C:\\Users\\roberto.corradetti\\.nuget\\packages\\microsoft.extensions.primitives\\10.0.11\\microsoft.extensions.primitives.10.0.11.nupkg.sha512",
-    "C:\\Users\\roberto.corradetti\\.nuget\\packages\\nerdbank.gitversioning\\3.10.91\\nerdbank.gitversioning.3.10.91.nupkg.sha512",
     "C:\\Users\\roberto.corradetti\\.nuget\\packages\\system.diagnostics.diagnosticsource\\10.0.11\\system.diagnostics.diagnosticsource.10.0.11.nupkg.sha512",
     "C:\\Users\\roberto.corradetti\\.nuget\\packages\\system.diagnostics.eventlog\\10.0.11\\system.diagnostics.eventlog.10.0.11.nupkg.sha512",
     "C:\\Users\\roberto.corradetti\\.nuget\\packages\\system.directoryservices\\9.0.0\\system.directoryservices.9.0.0.nupkg.sha512",

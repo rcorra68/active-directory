@@ -14,17 +14,6 @@
             "related": ".xml"
           }
         }
-      },
-      "Nerdbank.GitVersioning/3.10.91": {
-        "type": "package",
-        "build": {
-          "build/Nerdbank.GitVersioning.props": {},
-          "build/Nerdbank.GitVersioning.targets": {}
-        },
-        "buildMultiTargeting": {
-          "buildCrossTargeting/Nerdbank.GitVersioning.props": {},
-          "buildCrossTargeting/Nerdbank.GitVersioning.targets": {}
-        }
       }
     }
   },
@@ -54,67 +43,11 @@
         "lib/netstandard2.1/CsvHelper.dll",
         "lib/netstandard2.1/CsvHelper.xml"
       ]
-    },
-    "Nerdbank.GitVersioning/3.10.91": {
-      "sha512": "9MtEXm/um2lQAEoek1EkF4CXNH4JuXxv2jV3Ew2XlzP0LXxFaFiECS7ji8zf1ZaMnPGYbbom+Nm6y4ADc5HNHQ==",
-      "type": "package",
-      "path": "nerdbank.gitversioning/3.10.91",
-      "files": [
-        ".nupkg.metadata",
-        ".signature.p7s",
-        "README.md",
-        "build/InProjectVersionComputation.targets",
-        "build/MSBuildCore/LibGit2Sharp.dll",
-        "build/MSBuildCore/LibGit2Sharp.dll.config",
-        "build/MSBuildCore/Microsoft.DotNet.PlatformAbstractions.dll",
-        "build/MSBuildCore/Nerdbank.GitVersioning.Tasks.dll",
-        "build/MSBuildCore/Nerdbank.GitVersioning.dll",
-        "build/MSBuildCore/Newtonsoft.Json.dll",
-        "build/MSBuildCore/Validation.dll",
-        "build/MSBuildFull/LibGit2Sharp.dll",
-        "build/MSBuildFull/LibGit2Sharp.dll.config",
-        "build/MSBuildFull/Microsoft.DotNet.PlatformAbstractions.dll",
-        "build/MSBuildFull/Nerdbank.GitVersioning.Tasks.dll",
-        "build/MSBuildFull/Nerdbank.GitVersioning.dll",
-        "build/MSBuildFull/Newtonsoft.Json.dll",
-        "build/MSBuildFull/System.Buffers.dll",
-        "build/MSBuildFull/System.Memory.dll",
-        "build/MSBuildFull/System.Numerics.Vectors.dll",
-        "build/MSBuildFull/System.Runtime.CompilerServices.Unsafe.dll",
-        "build/MSBuildFull/System.Text.Json.dll",
-        "build/MSBuildFull/Validation.dll",
-        "build/MSBuildFull/lib/linux-x64/libgit2-3f4182d.so",
-        "build/MSBuildFull/lib/osx-arm64/libgit2-3f4182d.dylib",
-        "build/MSBuildFull/lib/osx-x64/libgit2-3f4182d.dylib",
-        "build/MSBuildTargetCaching.targets",
-        "build/Nerdbank.GitVersioning.Common.targets",
-        "build/Nerdbank.GitVersioning.Inner.targets",
-        "build/Nerdbank.GitVersioning.props",
-        "build/Nerdbank.GitVersioning.targets",
-        "build/PrivateP2PCaching.proj",
-        "build/runtimes/linux-arm/native/libgit2-3f4182d.so",
-        "build/runtimes/linux-arm64/native/libgit2-3f4182d.so",
-        "build/runtimes/linux-musl-arm/native/libgit2-3f4182d.so",
-        "build/runtimes/linux-musl-arm64/native/libgit2-3f4182d.so",
-        "build/runtimes/linux-musl-x64/native/libgit2-3f4182d.so",
-        "build/runtimes/linux-ppc64le/native/libgit2-3f4182d.so",
-        "build/runtimes/linux-x64/native/libgit2-3f4182d.so",
-        "build/runtimes/osx-arm64/native/libgit2-3f4182d.dylib",
-        "build/runtimes/osx-x64/native/libgit2-3f4182d.dylib",
-        "build/runtimes/win-arm64/native/git2-3f4182d.dll",
-        "build/runtimes/win-x64/native/git2-3f4182d.dll",
-        "build/runtimes/win-x86/native/git2-3f4182d.dll",
-        "buildCrossTargeting/Nerdbank.GitVersioning.props",
-        "buildCrossTargeting/Nerdbank.GitVersioning.targets",
-        "nerdbank.gitversioning.3.10.91.nupkg.sha512",
-        "nerdbank.gitversioning.nuspec"
-      ]
     }
   },
   "projectFileDependencyGroups": {
     "net9.0": [
-      "CsvHelper >= 33.1.0",
-      "Nerdbank.GitVersioning >= 3.10.91"
+      "CsvHelper >= 33.1.0"
     ]
   },
   "packageFolders": {
@@ -173,11 +106,6 @@
           "CsvHelper": {
             "target": "Package",
             "version": "[33.1.0, )"
-          },
-          "Nerdbank.GitVersioning": {
-            "suppressParent": "All",
-            "target": "Package",
-            "version": "[3.10.91, )"
           }
         },
         "imports": [

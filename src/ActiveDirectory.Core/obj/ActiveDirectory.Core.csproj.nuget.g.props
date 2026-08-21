@@ -13,7 +13,4 @@
     <SourceRoot Include="C:\Users\roberto.corradetti\.nuget\packages\" />
     <SourceRoot Include="C:\Program Files (x86)\Microsoft Visual Studio\Shared\NuGetPackages\" />
   </ItemGroup>
-  <ImportGroup Condition=" '$(ExcludeRestorePackageImports)' != 'true' ">
-    <Import Project="$(NuGetPackageRoot)nerdbank.gitversioning\3.10.91\build\Nerdbank.GitVersioning.props" Condition="Exists('$(NuGetPackageRoot)nerdbank.gitversioning\3.10.91\build\Nerdbank.GitVersioning.props')" />
-  </ImportGroup>
 </Project>
