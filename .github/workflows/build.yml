@@ -16,3 +16,5 @@ jobs:
       project_path: src/ActiveDirectory.UI/ActiveDirectory.UI.csproj
       runtimes: '["win-x64"]'
       artifact_name: active-directory
+      runs_on: "windows-latest"
+      dotnet_version: "9.0.x"

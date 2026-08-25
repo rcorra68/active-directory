@@ -7,3 +7,7 @@ on:
 jobs:
   validate:
     uses: rcorra68/reusable-workflows/.github/workflows/ci.yml@main
+    with:
+      solution_path: "ActiveDirectory.slnx"
+      runs_on: "windows-latest"
+      dotnet_version: "9.0.x"

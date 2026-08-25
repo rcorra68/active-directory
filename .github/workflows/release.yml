@@ -13,3 +13,7 @@ permissions:
 jobs:
   prepare:
     uses: rcorra68/reusable-workflows/.github/workflows/prepare-release.yml@main
+    with:
+      solution_path: "ActiveDirectory.slnx"
+      runs_on: "windows-latest"
+      dotnet_version: "9.0.x"
