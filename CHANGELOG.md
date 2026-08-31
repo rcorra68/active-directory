@@ -1,3 +1,23 @@
+## [0.1.1] - 2026-08-31
+
+### 🐛 Bug Fixes
+
+- *(ui)* Add missing application icon to executable
+
+### 💼 Other
+
+- *(taskfile)* Bundle native libraries into single file executable
+
+### 📚 Documentation
+
+- *(changelog)* Update for v0.1.0
+
+### ⚙️ Miscellaneous Tasks
+
+- Trigger pipeline rebuild
+- Update .gitignore
+- *(git)* Untrack obj directories and apply gitignore
+- *(release)* Set version to 0.1.1
 ## [0.1.0] - 2026-08-31
 
 ### 🐛 Bug Fixes
