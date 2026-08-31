@@ -35,7 +35,7 @@ tasks:
   publish:
     desc: "Pubblica come eseguibile singolo self-contained (monolitico, no DLL sparse)"
     cmds:
-      - dotnet publish "{{.PROJECT}}" -c Release -r {{.RID}} --self-contained true -o {{.OUT_DIR}} -p:PublishSingleFile=true
+      - dotnet publish "{{.PROJECT}}" -c Release -r {{.RID}} --self-contained true -o {{.OUT_DIR}} -p:PublishSingleFile=true -p:IncludeNativeLibrariesForSelfExtract=true -p:EnableCompressionInSingleFile=true
 
   package:
     desc: Comprime l'output pubblicato in uno zip (stesso passaggio fatto in CI)
