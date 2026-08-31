@@ -1,0 +1,68 @@
+version: '3'
+
+vars:
+  SOLUTION: ActiveDirectory.slnx
+  PROJECT: src/ActiveDirectory.UI/ActiveDirectory.UI.csproj
+  RID: win-x64
+  ARTIFACT_NAME: active-directory
+  OUT_DIR: out-{{.RID}}
+
+tasks:
+  default:
+    desc: Elenca i task disponibili
+    cmds:
+      - task --list-all
+    silent: true
+
+  restore:
+    desc: Ripristina le dipendenze NuGet e i tool locali (nbgv, ecc.)
+    cmds:
+      - dotnet tool restore
+      - dotnet restore "{{.SOLUTION}}"
+
+  build:
+    desc: Build in configurazione Release
+    deps: [restore]
+    cmds:
+      - dotnet build "{{.SOLUTION}}" -c Release --no-restore
+
+  test:
+    desc: Esegue i test (richiede build già fatta)
+    deps: [build]
+    cmds:
+      - dotnet test "{{.SOLUTION}}" -c Release --no-build --logger trx --results-directory TestResults
+
+  publish:
+    desc: "Pubblica come eseguibile singolo self-contained (monolitico, no DLL sparse)"
+    cmds:
+      - dotnet publish "{{.PROJECT}}" -c Release -r {{.RID}} --self-contained true -o {{.OUT_DIR}} -p:PublishSingleFile=true
+
+  package:
+    desc: Comprime l'output pubblicato in uno zip (stesso passaggio fatto in CI)
+    deps: [publish]
+    cmds:
+      - powershell -Command "Compress-Archive -Path '{{.OUT_DIR}}\*' -DestinationPath '{{.ARTIFACT_NAME}}-{{.RID}}.zip' -Force"
+
+  clean:
+    desc: Pulisce bin/obj/output di publish
+    cmds:
+      - dotnet clean "{{.SOLUTION}}"
+      - powershell -Command "Get-ChildItem -Recurse -Include bin,obj -Directory | Remove-Item -Recurse -Force -ErrorAction SilentlyContinue"
+      - powershell -Command "Remove-Item -Recurse -Force '{{.OUT_DIR}}' -ErrorAction SilentlyContinue"
+
+  version:
+    desc: "Mostra la versione corrente calcolata da nbgv (sola lettura, nessun bump — quello lo fa la pipeline CI)"
+    deps: [restore]
+    cmds:
+      - dotnet tool run nbgv -- get-version
+
+  ci:
+    desc: Simula in locale la sequenza build+test della pipeline CI, prima di pushare
+    cmds:
+      - task: build
+      - task: test
+
+  run:
+    desc: Avvia l'applicazione WPF in Debug
+    cmds:
+      - dotnet run --project "{{.PROJECT}}"
