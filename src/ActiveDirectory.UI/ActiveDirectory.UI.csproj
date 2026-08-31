@@ -8,8 +8,9 @@
     <UseWPF>true</UseWPF>
     <LangVersion>latest</LangVersion>
     <ApplicationIcon />
-	<StartupObject>ActiveDirectory.UI.Program</StartupObject>
+    <StartupObject>ActiveDirectory.UI.Program</StartupObject>
   </PropertyGroup>
+
 
   <ItemGroup>
     <PackageReference Include="CommunityToolkit.Mvvm" Version="8.4.2" />
