@@ -1,3 +1,16 @@
+## [0.2.1] - 2026-09-22
+
+### 🐛 Bug Fixes
+
+- *(tests)* Enable Microsoft Testing Platform support for dotnet test
+
+### 📚 Documentation
+
+- *(changelog)* Update for v0.2.0
+
+### ⚙️ Miscellaneous Tasks
+
+- *(release)* Set version to 0.2.1
 ## [0.2.0] - 2026-09-22
 
 ### 🚀 Features
