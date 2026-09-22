@@ -1,0 +1,90 @@
+﻿<ui:FluentWindow x:Class="ActiveDirectory.UI.Views.UserDetailsWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:ui="http://schemas.lepo.co/wpfui/2022/xaml"
+        Title="Active Directory - Informazioni Complete Utente"
+        Height="550" Width="700"
+        MinHeight="450" MinWidth="600"
+        WindowStartupLocation="CenterOwner">
+
+    <Grid Margin="16">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+
+        <!-- Header -->
+        <StackPanel Grid.Row="0" Margin="0,0,0,12">
+            <TextBlock Text="{Binding UserDetails.DisplayName}" FontSize="20" FontWeight="Bold"/>
+            <TextBlock Text="{Binding UserDetails.UserPrincipalName}" Foreground="{ui:ThemeResource TextFillColorSecondaryBrush}"/>
+        </StackPanel>
+
+        <!-- Tabbed View -->
+        <TabControl Grid.Row="1">
+
+            <!-- Tab 1: Generale -->
+            <TabItem Header="Generale">
+                <ScrollViewer VerticalScrollBarVisibility="Auto" Padding="12">
+                    <StackPanel>
+                        <TextBlock Text="sAMAccountName" FontWeight="SemiBold"/>
+                        <TextBox Text="{Binding UserDetails.SamAccountName, Mode=OneWay}" IsReadOnly="True" Margin="0,4,0,12"/>
+
+                        <TextBlock Text="Email" FontWeight="SemiBold"/>
+                        <TextBox Text="{Binding UserDetails.Mail, Mode=OneWay}" IsReadOnly="True" Margin="0,4,0,12"/>
+                    </StackPanel>
+                </ScrollViewer>
+            </TabItem>
+
+            <!-- Tab 2: Organizzazione -->
+            <TabItem Header="Organizzazione">
+                <ScrollViewer VerticalScrollBarVisibility="Auto" Padding="12">
+                    <StackPanel>
+                        <TextBlock Text="Qualifica / Titolo" FontWeight="SemiBold"/>
+                        <TextBox Text="{Binding UserDetails.Title, Mode=OneWay}" IsReadOnly="True" Margin="0,4,0,12"/>
+
+                        <TextBlock Text="Dipartimento" FontWeight="SemiBold"/>
+                        <TextBox Text="{Binding UserDetails.Department, Mode=OneWay}" IsReadOnly="True" Margin="0,4,0,12"/>
+
+                        <TextBlock Text="Azienda" FontWeight="SemiBold"/>
+                        <TextBox Text="{Binding UserDetails.Company, Mode=OneWay}" IsReadOnly="True" Margin="0,4,0,12"/>
+
+                        <TextBlock Text="Responsabile (Manager)" FontWeight="SemiBold"/>
+                        <TextBox Text="{Binding UserDetails.Manager, Mode=OneWay}" IsReadOnly="True" Margin="0,4,0,12"/>
+                    </StackPanel>
+                </ScrollViewer>
+            </TabItem>
+
+            <!-- Tab 3: Gruppi (Member Of) -->
+            <TabItem Header="Gruppi (Member Of)">
+                <ListView ItemsSource="{Binding UserDetails.Groups}" Margin="8">
+                    <ListView.ItemTemplate>
+                        <DataTemplate>
+                            <StackPanel Orientation="Horizontal" Margin="4">
+                                <ui:SymbolIcon Symbol="People24" Margin="0,0,8,0"/>
+                                <TextBlock Text="{Binding}" VerticalAlignment="Center"/>
+                            </StackPanel>
+                        </DataTemplate>
+                    </ListView.ItemTemplate>
+                </ListView>
+            </TabItem>
+
+            <!-- Tab 4: Attribute Editor (Raw LDAP) -->
+            <TabItem Header="Attribute Editor (Raw LDAP)">
+                <DataGrid ItemsSource="{Binding UserDetails.RawAttributes}" 
+                          AutoGenerateColumns="False" 
+                          IsReadOnly="True"
+                          GridLinesVisibility="Horizontal">
+                    <DataGrid.Columns>
+                        <DataGridTextColumn Header="Attributo LDAP" Binding="{Binding Key}" Width="200"/>
+                        <DataGridTextColumn Header="Valore" Binding="{Binding Value}" Width="*"/>
+                    </DataGrid.Columns>
+                </DataGrid>
+            </TabItem>
+        </TabControl>
+
+        <!-- Close Button -->
+        <ui:Button Grid.Row="2" Content="Chiudi" HorizontalAlignment="Right" Margin="0,12,0,0"
+                   Click="CloseButton_Click" Appearance="Secondary"/>
+    </Grid>
+</ui:FluentWindow>

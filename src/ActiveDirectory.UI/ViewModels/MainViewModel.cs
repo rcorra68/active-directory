@@ -1,12 +1,11 @@
 using ActiveDirectory.Core.Interfaces;
 using ActiveDirectory.Core.Models;
+using ActiveDirectory.UI.Views;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
-using System;
 using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.Reflection;
-using System.Threading.Tasks;
 using System.Windows;
 
 namespace ActiveDirectory.UI.ViewModels;
@@ -178,5 +177,23 @@ public partial class MainViewModel : ObservableObject
             Clipboard.SetText(SelectedUser.SamAccountName);
             StatusMessage = "sAMAccountName copied to clipboard.";
         }
+    }
+
+    [RelayCommand]
+    private void OpenFullUserDetails()
+    {
+        if (SelectedUser == null) return;
+
+        // TODO: Map or fetch AdUserExtendedDetails from service
+        var extendedDetails = _adService.GetExtendedDetails(SelectedUser.DistinguishedName);
+
+        var vm = new UserDetailsViewModel(extendedDetails);
+        var window = new UserDetailsWindow
+        {
+            DataContext = vm,
+            Owner = System.Windows.Application.Current.MainWindow
+        };
+
+        window.ShowDialog();
     }
 }
