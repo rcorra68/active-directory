@@ -221,7 +221,26 @@
 
         <!-- Status Bar -->
         <Border Grid.Row="3" Padding="16,6" Background="{DynamicResource ControlFillColorDefaultBrush}">
-            <TextBlock Text="{Binding StatusMessage}" Foreground="{ui:ThemeResource TextFillColorSecondaryBrush}" FontSize="12"/>
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="Auto"/>
+                </Grid.ColumnDefinitions>
+
+                <!-- Status Message -->
+                <TextBlock Grid.Column="0" 
+                           Text="{Binding StatusMessage}" 
+                           Foreground="{ui:ThemeResource TextFillColorSecondaryBrush}" 
+                           FontSize="12" 
+                           VerticalAlignment="Center"/>
+
+                <!-- Application Version Label -->
+                <TextBlock Grid.Column="1" 
+                           Text="{Binding AppVersion, FallbackValue='v1.0.0'}" 
+                           Foreground="{ui:ThemeResource TextFillColorTertiaryBrush}" 
+                           FontSize="10" 
+                           VerticalAlignment="Center"/>
+            </Grid>
         </Border>
     </Grid>
 </ui:FluentWindow>
