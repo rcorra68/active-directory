@@ -1,11 +1,13 @@
-using System;
-using System.Collections.ObjectModel;
-using System.Threading.Tasks;
-using System.Windows;
 using ActiveDirectory.Core.Interfaces;
 using ActiveDirectory.Core.Models;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
+using System;
+using System.Collections.ObjectModel;
+using System.Diagnostics;
+using System.Reflection;
+using System.Threading.Tasks;
+using System.Windows;
 
 namespace ActiveDirectory.UI.ViewModels;
 
@@ -35,12 +37,16 @@ public partial class MainViewModel : ObservableObject
     [ObservableProperty]
     private string _statusMessage = string.Empty;
 
+    public string AppVersion { get; }
+
     public ObservableCollection<AdUserDto> SearchResults { get; } = new();
 
     public MainViewModel(IActiveDirectoryService adService, IFiscalCodeDecoder fiscalCodeDecoder)
     {
         _adService = adService;
         _fiscalCodeDecoder = fiscalCodeDecoder;
+
+        AppVersion = GetApplicationVersion();
     }
 
     [RelayCommand]
@@ -125,6 +131,43 @@ public partial class MainViewModel : ObservableObject
         {
             IsBusy = false;
         }
+    }
+
+    private static string GetApplicationVersion()
+    {
+        var assembly = Assembly.GetExecutingAssembly();
+
+        // 1. Retrieve InformationalVersion attribute (Semantic Version)
+        var infoVersion = assembly.GetCustomAttribute<AssemblyInformationalVersionAttribute>()?.InformationalVersion;
+        if (!string.IsNullOrWhiteSpace(infoVersion))
+        {
+            return FormatSemVer(infoVersion);
+        }
+
+        // 2. Fallback to FileVersionInfo
+        var fileVersionInfo = FileVersionInfo.GetVersionInfo(assembly.Location);
+        if (!string.IsNullOrWhiteSpace(fileVersionInfo.ProductVersion))
+        {
+            return FormatSemVer(fileVersionInfo.ProductVersion);
+        }
+
+        // 3. Fallback to System.Version (truncating to Major.Minor.Build)
+        var version = assembly.GetName().Version;
+        return version != null ? $"v{version.Major}.{version.Minor}.{version.Build}" : "v0.2.1";
+    }
+
+    private static string FormatSemVer(string rawVersion)
+    {
+        // Strip build metadata after '+' (e.g., '0.2.1.4+abc' -> '0.2.1.4')
+        var cleanVersion = rawVersion.Split('+')[0].TrimStart('v', 'V');
+
+        // Normalize 4-digit versions (0.2.1.4) to 3-digit Semantic Versions (0.2.1)
+        if (Version.TryParse(cleanVersion, out var parsedVersion))
+        {
+            return $"v{parsedVersion.Major}.{parsedVersion.Minor}.{parsedVersion.Build}";
+        }
+
+        return $"v{cleanVersion}";
     }
 
     [RelayCommand]
