@@ -7,11 +7,10 @@
     <ImplicitUsings>enable</ImplicitUsings>
     <UseWPF>true</UseWPF>
     <LangVersion>latest</LangVersion>
-    <ApplicationIcon />
-    <StartupObject>ActiveDirectory.UI.Program</StartupObject>
     <ApplicationIcon>app.ico</ApplicationIcon>
+    <StartupObject>ActiveDirectory.UI.Program</StartupObject>
+    <IncludeNativeLibrariesForSelfExtract>true</IncludeNativeLibrariesForSelfExtract>
   </PropertyGroup>
-
 
   <ItemGroup>
     <PackageReference Include="CommunityToolkit.Mvvm" Version="8.4.2" />
