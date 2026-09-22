@@ -11,5 +11,8 @@ public sealed class CadastralCodeRecordMap : ClassMap<CadastralCodeRecord>
             .Name("CODICE NAZIONALE");
         Map(m => m.Name)
             .Name("DENOMINAZIONE ITALIANA");
+        Map(m => m.Province)
+            .Name("SIGLA PROVINCIA")
+            .Optional(); // vuoto per i record relativi a stati esteri
     }
 }
