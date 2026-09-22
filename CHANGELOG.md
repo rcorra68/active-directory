@@ -1,12 +1,22 @@
+## [0.2.0] - 2026-09-22
+
+### 🚀 Features
+
+- *(codice-fiscale)* Add province abbreviation and handle foreign states in birthplace decoding
+
+### 📚 Documentation
+
+- *(changelog)* Update for v0.1.1
+
+### ⚙️ Miscellaneous Tasks
+
+- Trigger pipeline rebuild
+- *(release)* Set version to 0.2.0
 ## [0.1.1] - 2026-08-31
 
 ### 🐛 Bug Fixes
 
 - *(ui)* Add missing application icon to executable
-
-### 💼 Other
-
-- *(taskfile)* Bundle native libraries into single file executable
 
 ### 📚 Documentation
 
@@ -18,16 +28,15 @@
 - Update .gitignore
 - *(git)* Untrack obj directories and apply gitignore
 - *(release)* Set version to 0.1.1
+
+### 💼 Other
+
+- *(taskfile)* Bundle native libraries into single file executable
 ## [0.1.0] - 2026-08-31
 
 ### 🐛 Bug Fixes
 
 - Correct ActiveDirectory.UI.csproj
-
-### 💼 Other
-
-- *(solution)* Initialize .slnx format and modular project files for .NET 9
-- *(tools)* Add dotnet local tool manifest with nbgv
 
 ### ⚙️ Miscellaneous Tasks
 
@@ -38,3 +47,8 @@
 - Parametrize runs-on and dotnet-version for windows targeting
 - *(release)* Set version to 0.1.0
 - *(release)* Set version to 0.1.0
+
+### 💼 Other
+
+- *(solution)* Initialize .slnx format and modular project files for .NET 9
+- *(tools)* Add dotnet local tool manifest with nbgv
