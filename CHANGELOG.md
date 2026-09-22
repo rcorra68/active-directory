@@ -1,3 +1,20 @@
+## [0.2.2] - 2026-09-22
+
+### 🐛 Bug Fixes
+
+- *(ui)* Normalize application version string to 3-digit semantic versioning
+
+### 📚 Documentation
+
+- *(changelog)* Update for v0.2.1
+
+### ⚙️ Miscellaneous Tasks
+
+- *(release)* Set version to 0.2.2
+
+### 💼 Other
+
+- *(csproj)* Enable native library self-extraction for single-file publish
 ## [0.2.1] - 2026-09-22
 
 ### 🐛 Bug Fixes
