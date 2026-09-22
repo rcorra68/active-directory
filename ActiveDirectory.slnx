@@ -4,4 +4,7 @@
     <Project Path="src/ActiveDirectory.Infrastructure/ActiveDirectory.Infrastructure.csproj" />
     <Project Path="src/ActiveDirectory.UI/ActiveDirectory.UI.csproj" Id="5d2e95f6-7d91-4a4f-b85d-0a6e1d8d43f3" />
   </Folder>
+  <Folder Name="/tests/">
+    <Project Path="tests/ActiveDirectory.Infrastructure.Tests/ActiveDirectory.Infrastructure.Tests.csproj" />
+  </Folder>
 </Solution>
