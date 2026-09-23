@@ -16,8 +16,8 @@
 
         <!-- Header -->
         <StackPanel Grid.Row="0" Margin="0,0,0,12">
-            <TextBlock Text="{Binding UserDetails.DisplayName}" FontSize="20" FontWeight="Bold"/>
-            <TextBlock Text="{Binding UserDetails.UserPrincipalName}" Foreground="{ui:ThemeResource TextFillColorSecondaryBrush}"/>
+            <TextBlock Text="{Binding Details.DisplayName}" FontSize="20" FontWeight="Bold"/>
+            <TextBlock Text="{Binding Details.UserPrincipalName}" Foreground="{ui:ThemeResource TextFillColorSecondaryBrush}"/>
         </StackPanel>
 
         <!-- Tabbed View -->
@@ -28,36 +28,45 @@
                 <ScrollViewer VerticalScrollBarVisibility="Auto" Padding="12">
                     <StackPanel>
                         <TextBlock Text="sAMAccountName" FontWeight="SemiBold"/>
-                        <TextBox Text="{Binding UserDetails.SamAccountName, Mode=OneWay}" IsReadOnly="True" Margin="0,4,0,12"/>
+                        <TextBox Text="{Binding Details.SamAccountName, Mode=OneWay}" IsReadOnly="True" Margin="0,4,0,12"/>
 
                         <TextBlock Text="Email" FontWeight="SemiBold"/>
-                        <TextBox Text="{Binding UserDetails.Mail, Mode=OneWay}" IsReadOnly="True" Margin="0,4,0,12"/>
+                        <TextBox Text="{Binding Details.Mail, Mode=OneWay}" IsReadOnly="True" Margin="0,4,0,12"/>
+
+                        <TextBlock Text="Stato Account" FontWeight="SemiBold"/>
+                        <TextBox Text="{Binding Details.AccountStatusDisplay, Mode=OneWay}" IsReadOnly="True" Margin="0,4,0,12"/>
+
+                        <TextBlock Text="Scadenza Password" FontWeight="SemiBold"/>
+                        <TextBox Text="{Binding Details.PasswordExpiryDisplay, Mode=OneWay}" IsReadOnly="True" Margin="0,4,0,12"/>
+
+                        <TextBlock Text="Ultimo Accesso" FontWeight="SemiBold"/>
+                        <TextBox Text="{Binding Details.LastLogonDisplay, Mode=OneWay}" IsReadOnly="True" Margin="0,4,0,12"/>
                     </StackPanel>
                 </ScrollViewer>
             </TabItem>
-
+            
             <!-- Tab 2: Organizzazione -->
             <TabItem Header="Organizzazione">
                 <ScrollViewer VerticalScrollBarVisibility="Auto" Padding="12">
                     <StackPanel>
                         <TextBlock Text="Qualifica / Titolo" FontWeight="SemiBold"/>
-                        <TextBox Text="{Binding UserDetails.Title, Mode=OneWay}" IsReadOnly="True" Margin="0,4,0,12"/>
+                        <TextBox Text="{Binding Details.Title, Mode=OneWay}" IsReadOnly="True" Margin="0,4,0,12"/>
 
                         <TextBlock Text="Dipartimento" FontWeight="SemiBold"/>
-                        <TextBox Text="{Binding UserDetails.Department, Mode=OneWay}" IsReadOnly="True" Margin="0,4,0,12"/>
+                        <TextBox Text="{Binding Details.Department, Mode=OneWay}" IsReadOnly="True" Margin="0,4,0,12"/>
 
                         <TextBlock Text="Azienda" FontWeight="SemiBold"/>
-                        <TextBox Text="{Binding UserDetails.Company, Mode=OneWay}" IsReadOnly="True" Margin="0,4,0,12"/>
+                        <TextBox Text="{Binding Details.Company, Mode=OneWay}" IsReadOnly="True" Margin="0,4,0,12"/>
 
                         <TextBlock Text="Responsabile (Manager)" FontWeight="SemiBold"/>
-                        <TextBox Text="{Binding UserDetails.Manager, Mode=OneWay}" IsReadOnly="True" Margin="0,4,0,12"/>
+                        <TextBox Text="{Binding Details.Manager, Mode=OneWay}" IsReadOnly="True" Margin="0,4,0,12"/>
                     </StackPanel>
                 </ScrollViewer>
             </TabItem>
 
             <!-- Tab 3: Gruppi (Member Of) -->
             <TabItem Header="Gruppi (Member Of)">
-                <ListView ItemsSource="{Binding UserDetails.Groups}" Margin="8">
+                <ListView ItemsSource="{Binding Details.Groups}" Margin="8">
                     <ListView.ItemTemplate>
                         <DataTemplate>
                             <StackPanel Orientation="Horizontal" Margin="4">
@@ -71,7 +80,7 @@
 
             <!-- Tab 4: Attribute Editor (Raw LDAP) -->
             <TabItem Header="Attribute Editor (Raw LDAP)">
-                <DataGrid ItemsSource="{Binding UserDetails.RawAttributes}" 
+                <DataGrid ItemsSource="{Binding Details.RawAttributes}" 
                           AutoGenerateColumns="False" 
                           IsReadOnly="True"
                           GridLinesVisibility="Horizontal">
