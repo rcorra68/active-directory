@@ -1,5 +1,6 @@
 using ActiveDirectory.Core.Interfaces;
 using ActiveDirectory.Core.Models;
+using ActiveDirectory.Infrastructure.Services;
 using ActiveDirectory.UI.Views;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
@@ -180,20 +181,43 @@ public partial class MainViewModel : ObservableObject
     }
 
     [RelayCommand]
-    private void OpenFullUserDetails()
+    private async Task OpenExtendedDetailsAsync()
     {
-        if (SelectedUser == null) return;
+        if (SelectedUser == null || string.IsNullOrWhiteSpace(SelectedUser.DistinguishedName))
+            return;
 
-        // TODO: Map or fetch AdUserExtendedDetails from service
-        var extendedDetails = _adService.GetExtendedDetails(SelectedUser.DistinguishedName);
-
-        var vm = new UserDetailsViewModel(extendedDetails);
-        var window = new UserDetailsWindow
+        try
         {
-            DataContext = vm,
-            Owner = System.Windows.Application.Current.MainWindow
-        };
+            IsBusy = true;
+            StatusMessage = "Recupero attributi LDAP in corso...";
 
-        window.ShowDialog();
+            // Call the asynchronous extended details service
+            var extendedDetails = await _adService.GetExtendedUserDetailsAsync(SelectedUser.DistinguishedName);
+
+            if (extendedDetails == null)
+            {
+                StatusMessage = "Impossibile recuperare i dettagli dell'utente selezionato.";
+                return;
+            }
+
+            // Instantiate and display modal window
+            var viewModel = new UserDetailsViewModel(extendedDetails);
+            var window = new UserDetailsWindow
+            {
+                DataContext = viewModel,
+                Owner = System.Windows.Application.Current.MainWindow
+            };
+
+            window.ShowDialog();
+        }
+        catch (Exception ex)
+        {
+            StatusMessage = $"Errore durante il recupero dei dettagli: {ex.Message}";
+        }
+        finally
+        {
+            IsBusy = false;
+            StatusMessage = "Pronto";
+        }
     }
 }

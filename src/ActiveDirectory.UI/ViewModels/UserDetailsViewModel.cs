@@ -6,10 +6,10 @@ namespace ActiveDirectory.UI.ViewModels;
 public partial class UserDetailsViewModel : ObservableObject
 {
     [ObservableProperty]
-    private AdUserExtendedDetails _userDetails;
+    private AdUserExtendedDetails _details;
 
-    public UserDetailsViewModel(AdUserExtendedDetails userDetails)
+    public UserDetailsViewModel(AdUserExtendedDetails details)
     {
-        _userDetails = userDetails;
+        _details = details;
     }
 }
