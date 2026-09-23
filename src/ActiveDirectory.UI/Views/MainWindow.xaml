@@ -3,6 +3,7 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:ui="http://schemas.lepo.co/wpfui/2022/xaml"
         xmlns:vm="clr-namespace:ActiveDirectory.UI.ViewModels"
+        xmlns:local="clr-namespace:ActiveDirectory.UI.Converters"
         Title="Active Directory - Ricerca Utenti"
         Height="760" Width="1100"
         MinHeight="680" MinWidth="960"
@@ -10,6 +11,7 @@
 
     <ui:FluentWindow.Resources>
         <BooleanToVisibilityConverter x:Key="BoolToVis"/>
+        <local:NullToVisibilityConverter x:Key="NullToVis"/>
 
         <Style x:Key="FieldLabel" TargetType="TextBlock">
             <Setter Property="FontSize" Value="11"/>
@@ -205,6 +207,7 @@
                         <!-- Action Button for Extended Details Modal -->
                         <ui:Button Content="Mostra Dettagli Completi AD"
                                    Command="{Binding DataContext.OpenExtendedDetailsCommand, RelativeSource={RelativeSource AncestorType=ui:FluentWindow}}"
+                                    Visibility="{Binding ., Converter={StaticResource NullToVis}}"
                                    Appearance="Secondary"
                                    Icon="{ui:SymbolIcon ContactCard24}"
                                    Margin="0,16,0,0"

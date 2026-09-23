@@ -1,7 +1,8 @@
-﻿using System.DirectoryServices;
-using System.Runtime.Versioning;
-using ActiveDirectory.Core.Interfaces;
+﻿using ActiveDirectory.Core.Interfaces;
 using ActiveDirectory.Core.Models;
+using System.DirectoryServices;
+using System.Reflection;
+using System.Runtime.Versioning;
 
 namespace ActiveDirectory.Infrastructure.Services;
 
@@ -9,6 +10,7 @@ namespace ActiveDirectory.Infrastructure.Services;
 public class ActiveDirectoryService : IActiveDirectoryService
 {
     private readonly string _ldapPath;
+    private long? _maxPwdAgeTicks; // cache: la policy password è a livello di dominio, non cambia ad ogni richiesta
 
     public ActiveDirectoryService(string ldapPath = "LDAP://DC=dipvvf,DC=it")
     {
@@ -96,7 +98,6 @@ public class ActiveDirectoryService : IActiveDirectoryService
                 Filter = "(objectClass=user)"
             };
 
-            // Retrieve all populated LDAP attributes
             SearchResult? result = searcher.FindOne();
             if (result == null) return null;
 
@@ -106,12 +107,12 @@ public class ActiveDirectoryService : IActiveDirectoryService
             foreach (string propName in result.Properties.PropertyNames)
             {
                 var valCollection = result.Properties[propName];
+                var rawFirstValue = valCollection.Count > 0 ? valCollection[0] : null;
+
                 var values = valCollection.Cast<object>().Select(v => v?.ToString() ?? string.Empty).ToList();
                 string combinedValue = string.Join(", ", values);
-
                 rawMap[propName] = combinedValue;
 
-                // Map specific known fields
                 switch (propName.ToLowerInvariant())
                 {
                     case "displayname": details.DisplayName = combinedValue; break;
@@ -127,12 +128,98 @@ public class ActiveDirectoryService : IActiveDirectoryService
                     case "memberof":
                         details.Groups = values;
                         break;
+
+                    // userAccountControl è un intero "normale" (Integer syntax), niente LargeInteger
+                    case "useraccountcontrol":
+                        if (long.TryParse(combinedValue, out var uac))
+                        {
+                            details.IsEnabled = (uac & 0x2) == 0;           // ACCOUNTDISABLE
+                            details.PasswordNeverExpires = (uac & 0x10000) != 0; // DONT_EXPIRE_PASSWORD
+                        }
+                        break;
+
+                    // Questi tre sono Integer8 (LargeInteger) -> serve la conversione dedicata
+                    case "pwdlastset":
+                        details.PasswordLastSet = FileTimeToDateTime(ParseLargeInteger(rawFirstValue));
+                        break;
+                    case "lockouttime":
+                        details.IsLockedOut = ParseLargeInteger(rawFirstValue) > 0;
+                        break;
+                    case "lastlogontimestamp":
+                        details.LastLogon = FileTimeToDateTime(ParseLargeInteger(rawFirstValue));
+                        break;
+                }
+            }
+
+            // Scadenza password = pwdLastSet + maxPwdAge (policy di dominio)
+            if (!details.PasswordNeverExpires && details.PasswordLastSet.HasValue)
+            {
+                var maxPwdAgeTicks = GetMaxPwdAgeTicks();
+                if (maxPwdAgeTicks != 0) // 0 = "le password non scadono mai" a livello di dominio
+                {
+                    details.PasswordExpiryDate = details.PasswordLastSet.Value.AddTicks(Math.Abs(maxPwdAgeTicks));
                 }
             }
 
             details.RawAttributes = new Dictionary<string, string>(rawMap);
             return details;
         }, cancellationToken);
+    }
+
+    /// <summary>
+    /// Legge maxPwdAge dall'oggetto dominio (root LDAP). Risultato in cache: è una policy
+    /// di dominio, non cambia tra una richiesta e l'altra nella vita del servizio.
+    /// </summary>
+    private long GetMaxPwdAgeTicks()
+    {
+        if (_maxPwdAgeTicks.HasValue) return _maxPwdAgeTicks.Value;
+
+        using var domainRoot = new DirectoryEntry(_ldapPath);
+        var raw = domainRoot.Properties["maxPwdAge"].Count > 0
+            ? domainRoot.Properties["maxPwdAge"][0]
+            : null;
+
+        _maxPwdAgeTicks = ParseLargeInteger(raw);
+        return _maxPwdAgeTicks.Value;
+    }
+
+    /// <summary>
+    /// Gli attributi AD di tipo "Interval" (pwdLastSet, lastLogon, lastLogonTimestamp,
+    /// accountExpires, lockoutTime, maxPwdAge...) vengono restituiti da System.DirectoryServices
+    /// come oggetti COM IADsLargeInteger, non come long: HighPart/LowPart vanno letti via reflection.
+    /// </summary>
+    private static long ParseLargeInteger(object? rawValue)
+    {
+        if (rawValue is null) return 0;
+        if (rawValue is long l) return l;
+        if (rawValue is int i) return i; // capita per il valore 0
+
+        try
+        {
+            var type = rawValue.GetType();
+            int highPart = (int)type.InvokeMember("HighPart", BindingFlags.GetProperty, null, rawValue, null)!;
+            int lowPart = (int)type.InvokeMember("LowPart", BindingFlags.GetProperty, null, rawValue, null)!;
+            return (((long)highPart) << 32) + (uint)lowPart;
+        }
+        catch
+        {
+            return 0;
+        }
+    }
+
+    private static DateTime? FileTimeToDateTime(long fileTime)
+    {
+        // 0 = "mai impostato/mai avvenuto", valori negativi non hanno senso per queste date
+        if (fileTime <= 0) return null;
+
+        try
+        {
+            return DateTime.FromFileTimeUtc(fileTime).ToLocalTime();
+        }
+        catch (ArgumentOutOfRangeException)
+        {
+            return null;
+        }
     }
 
     private static string GetPropertyValue(SearchResult result, string propertyName)
