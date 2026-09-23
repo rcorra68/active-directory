@@ -6,4 +6,5 @@ public interface IActiveDirectoryService
 {
     Task<IEnumerable<AdUserDto>> SearchUsersAsync(string? firstName, string? lastName, CancellationToken cancellationToken = default);
     Task<AdUserDto?> GetUserDetailsAsync(string samAccountName, CancellationToken cancellationToken = default);
+    Task<AdUserExtendedDetails?> GetExtendedUserDetailsAsync(string distinguishedName, CancellationToken cancellationToken = default);
 }
