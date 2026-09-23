@@ -1,3 +1,23 @@
+## [0.3.0] - 2026-09-23
+
+### 🚀 Features
+
+- *(ui)* Add modal user details dialog with tabbed LDAP attribute views
+- *(ui)* Implement UserDetailsWindow and wire up OpenExtendedDetailsCommand
+- *(ad)* Add account status, password expiry and last logon to user details
+
+### 🐛 Bug Fixes
+
+- *(ui)* Correct UserDetailsWindow bindings to match ViewModel property name
+
+### 📚 Documentation
+
+- *(changelog)* Update for v0.2.2
+
+### ⚙️ Miscellaneous Tasks
+
+- *(tools)* Update nbgv dotnet tool to 3.10.94
+- *(release)* Set version to 0.3.0
 ## [0.2.2] - 2026-09-22
 
 ### 🐛 Bug Fixes
