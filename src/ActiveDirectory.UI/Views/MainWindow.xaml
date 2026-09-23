@@ -3,6 +3,7 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:ui="http://schemas.lepo.co/wpfui/2022/xaml"
         xmlns:vm="clr-namespace:ActiveDirectory.UI.ViewModels"
+        xmlns:local="clr-namespace:ActiveDirectory.UI.Converters"
         Title="Active Directory - Ricerca Utenti"
         Height="760" Width="1100"
         MinHeight="680" MinWidth="960"
@@ -10,14 +11,14 @@
 
     <ui:FluentWindow.Resources>
         <BooleanToVisibilityConverter x:Key="BoolToVis"/>
-        
+        <local:NullToVisibilityConverter x:Key="NullToVis"/>
+
         <Style x:Key="FieldLabel" TargetType="TextBlock">
             <Setter Property="FontSize" Value="11"/>
             <Setter Property="Foreground" Value="{ui:ThemeResource TextFillColorSecondaryBrush}"/>
             <Setter Property="Margin" Value="0,0,0,2"/>
         </Style>
 
-        <!-- FIX: Set explicit Background brush to allow VisualStateManager color animations -->
         <Style x:Key="FieldValue" TargetType="TextBox" BasedOn="{StaticResource {x:Type TextBox}}">
             <Setter Property="Margin" Value="0,0,0,8"/>
             <Setter Property="IsReadOnly" Value="True"/>
@@ -203,9 +204,18 @@
                             </StackPanel>
                         </Grid>
 
+                        <!-- Action Button for Extended Details Modal -->
+                        <ui:Button Content="Mostra Dettagli Completi AD"
+                                   Command="{Binding DataContext.OpenExtendedDetailsCommand, RelativeSource={RelativeSource AncestorType=ui:FluentWindow}}"
+                                    Visibility="{Binding ., Converter={StaticResource NullToVis}}"
+                                   Appearance="Secondary"
+                                   Icon="{ui:SymbolIcon ContactCard24}"
+                                   Margin="0,16,0,0"
+                                   HorizontalAlignment="Left"/>
+
                     </StackPanel>
 
-                    <!-- Overlay di caricamento durante il fetch dei dettagli -->
+                    <!-- Loading Overlay -->
                     <Border Background="{ui:ThemeResource ApplicationBackgroundBrush}"
                             Opacity="0.85"
                             Visibility="{Binding DataContext.IsBusy, RelativeSource={RelativeSource AncestorType=ui:FluentWindow}, Converter={StaticResource BoolToVis}}">
@@ -220,21 +230,19 @@
         </Grid>
 
         <!-- Status Bar -->
-        <Border Grid.Row="3" Padding="16,6" Background="{DynamicResource ControlFillColorDefaultBrush}">
+        <Border Grid.Row="3" Padding="16,6" Background="{ui:ThemeResource ControlFillColorDefaultBrush}">
             <Grid>
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="*"/>
                     <ColumnDefinition Width="Auto"/>
                 </Grid.ColumnDefinitions>
 
-                <!-- Status Message -->
                 <TextBlock Grid.Column="0" 
                            Text="{Binding StatusMessage}" 
                            Foreground="{ui:ThemeResource TextFillColorSecondaryBrush}" 
                            FontSize="12" 
                            VerticalAlignment="Center"/>
 
-                <!-- Application Version Label -->
                 <TextBlock Grid.Column="1" 
                            Text="{Binding AppVersion, FallbackValue='v1.0.0'}" 
                            Foreground="{ui:ThemeResource TextFillColorTertiaryBrush}" 

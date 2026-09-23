@@ -1,12 +1,12 @@
 using ActiveDirectory.Core.Interfaces;
 using ActiveDirectory.Core.Models;
+using ActiveDirectory.Infrastructure.Services;
+using ActiveDirectory.UI.Views;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
-using System;
 using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.Reflection;
-using System.Threading.Tasks;
 using System.Windows;
 
 namespace ActiveDirectory.UI.ViewModels;
@@ -177,6 +177,47 @@ public partial class MainViewModel : ObservableObject
         {
             Clipboard.SetText(SelectedUser.SamAccountName);
             StatusMessage = "sAMAccountName copied to clipboard.";
+        }
+    }
+
+    [RelayCommand]
+    private async Task OpenExtendedDetailsAsync()
+    {
+        if (SelectedUser == null || string.IsNullOrWhiteSpace(SelectedUser.DistinguishedName))
+            return;
+
+        try
+        {
+            IsBusy = true;
+            StatusMessage = "Recupero attributi LDAP in corso...";
+
+            // Call the asynchronous extended details service
+            var extendedDetails = await _adService.GetExtendedUserDetailsAsync(SelectedUser.DistinguishedName);
+
+            if (extendedDetails == null)
+            {
+                StatusMessage = "Impossibile recuperare i dettagli dell'utente selezionato.";
+                return;
+            }
+
+            // Instantiate and display modal window
+            var viewModel = new UserDetailsViewModel(extendedDetails);
+            var window = new UserDetailsWindow
+            {
+                DataContext = viewModel,
+                Owner = System.Windows.Application.Current.MainWindow
+            };
+
+            window.ShowDialog();
+        }
+        catch (Exception ex)
+        {
+            StatusMessage = $"Errore durante il recupero dei dettagli: {ex.Message}";
+        }
+        finally
+        {
+            IsBusy = false;
+            StatusMessage = "Pronto";
         }
     }
 }
